@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+:root {
+  --background: #060510;
+  --foreground: #f7fbff;
+  --surface: #0b1424;
+  --surface-muted: #152238;
+  --line: rgba(151, 176, 209, 0.16);
+  --muted: #8ea0ba;
+  --green: #20e982;
+  --blue: #2697f3;
+  --mint: #83e0c4;
+  --red: #ff4b55;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-line: var(--line);
+  --color-muted: var(--muted);
+  --color-chad-green: var(--green);
+  --color-chad-blue: var(--blue);
+  --color-chad-mint: var(--mint);
+  --color-chad-red: var(--red);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  outline-offset: 3px;
+}
+
+::selection {
+  background: rgba(32, 233, 130, 0.3);
+  color: white;
+}
+
+.glass {
+  background: rgba(11, 20, 36, 0.72);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(20px);
+}
+
+.text-gradient {
+  background: linear-gradient(110deg, #ffffff 18%, #83e0c4 52%, #2697f3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.grid-lines {
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(142,160,186,.35) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .ticker-track-left,
+  .ticker-track-right {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Infinite Rotating Tickers */
+@keyframes chad-ticker-left {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes chad-ticker-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+.ticker-track-left {
+  animation: chad-ticker-left 38s linear infinite;
+}
+
+.ticker-track-right {
+  animation: chad-ticker-right 38s linear infinite;
+}
+
+.group-hover-paused:hover .ticker-track-left,
+.group-hover-paused:hover .ticker-track-right {
+  animation-play-state: paused;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin 45s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin 30s linear infinite reverse;
+}
+
+
+
