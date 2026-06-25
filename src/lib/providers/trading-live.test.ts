@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest"
 import { mintSchema } from "@/app/api/_utils"
-import { mapInterval } from "@/lib/providers/birdeye"
+import { getBirdeyeTrades, mapInterval } from "@/lib/providers/birdeye"
 import { JupiterError } from "@/lib/providers/jupiter"
 import { getAlchemyPositions } from "@/lib/providers/alchemy"
 import { loadPosition } from "@/lib/providers/trading"
@@ -31,6 +31,87 @@ describe("Birdeye Interval Mapping", () => {
     expect(mapInterval("4H")).toBe("4H")
     expect(mapInterval("1d")).toBe("1D")
     expect(mapInterval("1D")).toBe("1D")
+  })
+})
+
+describe("Birdeye Trade Mapping", () => {
+  beforeEach(() => {
+    process.env.BIRDEYE_API_KEY = "mock-birdeye-key"
+    global.fetch = vi.fn().mockResolvedValue({
+      status: 200,
+      headers: {
+        get: () => null,
+      },
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          data: {
+            items: [
+              {
+                base: {
+                  symbol: "BONK",
+                  address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                  uiAmount: 1250000,
+                },
+                quote: {
+                  symbol: "SOL",
+                  address: "So11111111111111111111111111111111111111112",
+                  uiAmount: 0.42,
+                },
+                tokenPrice: 3.36e-7,
+                blockUnixTime: 1710000000,
+                owner: "8C3mQ9n5dQ2v9m8j4r1x2n7p5s6t4u8v9w0x1y2z3a",
+                side: "buy",
+              },
+              {
+                base: {
+                  symbol: "SOL",
+                  address: "So11111111111111111111111111111111111111112",
+                  uiAmount: 0.21,
+                },
+                quote: {
+                  symbol: "BONK",
+                  address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                  uiAmount: 625000,
+                },
+                tokenPrice: 3.36e-7,
+                blockUnixTime: 1710000060,
+                owner: "9D4nQ9n5dQ2v9m8j4r1x2n7p5s6t4u8v9w0x1y2z3b",
+                side: "sell",
+              },
+            ],
+          },
+        }),
+    })
+  })
+
+  afterEach(() => {
+    global.fetch = originalFetch
+    delete process.env.BIRDEYE_API_KEY
+  })
+
+  it("maps Birdeye's nested trade payload into trade events", async () => {
+    const trades = await getBirdeyeTrades("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", 2)
+
+    expect(trades).toHaveLength(2)
+    expect(trades[0]).toMatchObject({
+      signature: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263-0",
+      side: "buy",
+      tokenAmount: 1250000,
+      valueUsd: 0.42,
+      price: 3.36e-7,
+      wallet: "8C3mQ9n5dQ2v9m8j4r1x2n7p5s6t4u8v9w0x1y2z3a",
+      timestamp: 1710000000000,
+    })
+    expect(trades[1]).toMatchObject({
+      signature: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263-1",
+      side: "sell",
+      tokenAmount: 625000,
+      valueUsd: 0.21,
+      price: 3.36e-7,
+      wallet: "9D4nQ9n5dQ2v9m8j4r1x2n7p5s6t4u8v9w0x1y2z3b",
+      timestamp: 1710000060000,
+    })
   })
 })
 

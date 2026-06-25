@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest } from "next/server"
 import { z } from "zod"
 import {
@@ -10,6 +9,7 @@ import {
   success,
 } from "@/app/api/_utils"
 import { verifyPrivyRequest } from "@/lib/server-auth"
+import { ensureProfileExists } from "@/lib/supabase-persistence"
 import { getSupabaseAdmin } from "@/lib/supabase-admin"
 
 const bodySchema = z.object({
@@ -17,46 +17,6 @@ const bodySchema = z.object({
   walletAddress: addressSchema.optional(),
 })
 const querySchema = z.object({ mint: mintSchema })
-
-async function ensureProfileExists(
-  supabase: any,
-  userId: string,
-  walletAddress?: string
-): Promise<{ success: boolean; error?: string }> {
-  const { data: profile, error: selectError } = await supabase
-    .from("profiles")
-    .select("privy_user_id, wallet_address")
-    .eq("privy_user_id", userId)
-    .maybeSingle()
-
-  if (selectError) {
-    return { success: false, error: selectError.message }
-  }
-
-  if (!profile) {
-    const { error: insertError } = await supabase.from("profiles").insert({
-      privy_user_id: userId,
-      wallet_address: walletAddress || null,
-      updated_at: new Date().toISOString(),
-    })
-    if (insertError) {
-      return { success: false, error: insertError.message }
-    }
-  } else if (walletAddress && profile.wallet_address !== walletAddress) {
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({
-        wallet_address: walletAddress,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("privy_user_id", userId)
-    if (updateError) {
-      return { success: false, error: updateError.message }
-    }
-  }
-
-  return { success: true }
-}
 
 export async function GET(request: NextRequest) {
   const auth = await verifyPrivyRequest(request)

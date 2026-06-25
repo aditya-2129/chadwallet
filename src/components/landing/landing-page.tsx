@@ -221,7 +221,7 @@ export function LandingPage() {
             </h2>
             {/* Tagline */}
             <p className="text-[#D1D8FF99] text-center tracking-tight lg:text-[22px] lg:leading-6">
-              From memecoins to viral tokens, trade any crypto in seconds.
+              From memecoins to breakout tokens, trade Solana in seconds.
             </p>
           </div>
 
@@ -265,22 +265,26 @@ export function LandingPage() {
         </div>
 
         {/* Astronaut — mobile */}
-        <Image
-          src="/brand/astronaut-mobile.webp"
-          alt=""
-          width={600}
-          height={600}
-          className="lg:hidden -mt-16 animate-[float_10s_ease-in-out_infinite]"
-        />
+        <div className="relative -mt-16 aspect-square w-[88vw] max-w-[600px] lg:hidden">
+          <Image
+            src="/brand/astronaut-mobile.webp"
+            alt=""
+            fill
+            sizes="88vw"
+            className="animate-[float_10s_ease-in-out_infinite] object-contain"
+          />
+        </div>
         {/* Astronaut — desktop */}
-        <Image
-          src="/brand/astronaut.webp"
-          alt=""
-          width={760}
-          height={760}
-          className="hidden lg:block h-130 -mt-20 object-contain animate-[float_4s_ease-in-out_infinite]"
-          priority
-        />
+        <div className="relative hidden aspect-square w-[82vw] max-w-[760px] -mt-20 lg:block">
+          <Image
+            src="/brand/astronaut.webp"
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 760px, 82vw"
+            className="animate-[float_4s_ease-in-out_infinite] object-contain"
+            priority
+          />
+        </div>
 
         {/* ── "Trade from anywhere" section — desktop ── */}
         <div className="hidden lg:flex flex-col items-center py-20 px-8 gap-4">
@@ -381,11 +385,11 @@ export function LandingPage() {
         </div>
 
         {/* ── Feature cards section ── */}
-        <div className="pt-8 lg:py-2 px-3 lg:px-20 flex flex-col self-stretch min-[500px]:self-center gap-13 max-w-[1250px]">
+        <div id="features" className="pt-8 lg:py-2 px-3 lg:px-20 flex flex-col self-stretch min-[500px]:self-center gap-13 max-w-[1250px] scroll-mt-24">
           {/* Section heading — desktop only */}
           <div className="hidden lg:flex flex-col gap-3">
             <h2 className="text-[60px] tracking-tighter leading-15">never miss out again</h2>
-            <p className="text-[#EAEDFF99] leading-6 text-[28px]">the only social-first trading app for chads</p>
+            <p className="text-[#EAEDFF99] leading-6 text-[28px]">a social-first trading app with live market energy</p>
           </div>
 
           <div className="flex flex-col gap-3 lg:gap-6">
@@ -443,18 +447,18 @@ export function LandingPage() {
               {/* Zero Complexity */}
               <div className="group flex-1 min-w-0 pt-8 pb-0 rounded-[24px] flex flex-col overflow-hidden border border-white/5 hover:border-white/12 transition-all duration-300 bg-[#0c1220] h-[430px] lg:h-[450px]">
                 <div className="font-mono text-xs uppercase tracking-wider text-[#606af7] px-8 font-bold">ZERO COMPLEXITY</div>
-                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">multichain &amp; gasless</h3>
+                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">built for fast Solana flows</h3>
                 <div className="relative w-full flex-1 mt-6 overflow-hidden">
-                  <Image loading="lazy" src="/brand/token.png" alt="Assets preview" fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 33vw" />
+                  <Image loading="lazy" src="/brand/token.png" alt="Token preview" fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 33vw" />
                 </div>
               </div>
               
               {/* One Click to Buy */}
               <div className="group flex-1 min-w-0 pt-8 pb-0 rounded-[24px] flex flex-col overflow-hidden border border-white/5 hover:border-white/12 transition-all duration-300 bg-[#0b162c] h-[430px] lg:h-[450px]">
                 <div className="font-mono text-xs uppercase tracking-wider text-[#606af7] px-8 font-bold">ONE CLICK TO BUY</div>
-                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">fund with apple pay &amp; credit cards</h3>
+                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">fund your wallet fast</h3>
                 <div className="relative w-full flex-1 mt-6 overflow-hidden">
-                  <Image loading="lazy" src="/brand/launch.png" alt="Apple Pay preview" fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 33vw" />
+                  <Image loading="lazy" src="/brand/launch.png" alt="Funding flow preview" fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 33vw" />
                 </div>
               </div>
             </div>
@@ -482,7 +486,7 @@ export function LandingPage() {
                   a trading app<br />for the rest of us
                 </h2>
                 <p className="lg:text-[22px] text-[#D1D8FF99] lg:leading-7 tracking-tight text-center">
-                  join 500,000 traders making their name on ChadWallet
+                  join the traders making moves on ChadWallet
                 </p>
                 <div className="pt-6">
                   {/* Mobile CTA */}

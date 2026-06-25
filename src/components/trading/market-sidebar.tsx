@@ -25,27 +25,69 @@ export function MarketSidebar({
     <aside className="scrollbar-thin hidden lg:block lg:order-1 h-[calc(100vh-100px)] overflow-y-auto bg-[#05050d] border-r border-white/10">
       <div className="sticky top-0 z-10 border-b border-white/10 bg-[#05050d]">
         <div className="flex h-10 items-center gap-1 px-3 text-xs">
-          <span className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-muted hover:text-white cursor-pointer">
+          <button
+            type="button"
+            disabled
+            title="Alerts coming soon"
+            aria-label="Alerts coming soon"
+            className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-muted/70 opacity-60 cursor-not-allowed"
+          >
             <Bell className="size-3" /> Alerts
-          </span>
-          <span className="rounded-lg bg-white/[0.06] px-2.5 py-1.5 font-semibold text-white">Tokens</span>
-          <span className="rounded-lg px-2 py-1.5 text-muted hover:text-white cursor-pointer">Leaderboard</span>
-          <span className="rounded-lg px-2 py-1.5 text-muted hover:text-white cursor-pointer">Feed</span>
-          <ChevronLeft className="ml-auto size-4 text-muted hover:text-white cursor-pointer" />
+          </button>
+          <button
+            type="button"
+            disabled
+            title="Tokens is the active view"
+            aria-label="Tokens is the active view"
+            className="rounded-lg bg-white/[0.06] px-2.5 py-1.5 font-semibold text-white"
+          >
+            Tokens
+          </button>
+          <button
+            type="button"
+            disabled
+            title="Leaderboard coming soon"
+            aria-label="Leaderboard coming soon"
+            className="rounded-lg px-2 py-1.5 text-muted/70 opacity-60 cursor-not-allowed"
+          >
+            Leaderboard
+          </button>
+          <button
+            type="button"
+            disabled
+            title="Feed coming soon"
+            aria-label="Feed coming soon"
+            className="rounded-lg px-2 py-1.5 text-muted/70 opacity-60 cursor-not-allowed"
+          >
+            Feed
+          </button>
+          <button
+            type="button"
+            disabled
+            title="Sidebar collapse coming soon"
+            aria-label="Sidebar collapse coming soon"
+            className="ml-auto cursor-not-allowed text-muted/70 opacity-60"
+          >
+            <ChevronLeft className="size-4" />
+          </button>
         </div>
         <div className="flex gap-1.5 overflow-hidden px-3 pb-2 pt-1 border-t border-white/5">
           {["Watchlist", "Crypto", "Trending", "Most held", "Graduated"].map((item) => (
-            <span
+            <button
+              type="button"
               key={item}
+              disabled
+              title={`${item} coming soon`}
+              aria-label={`${item} coming soon`}
               className={cn(
-                "shrink-0 rounded-md border border-white/5 px-2 py-1 text-[10px] cursor-pointer transition",
+                "shrink-0 rounded-md border border-white/5 px-2 py-1 text-[10px] transition cursor-not-allowed opacity-70",
                 item === "Trending"
                   ? "bg-white/10 font-semibold text-white"
-                  : "text-muted hover:text-white hover:bg-white/5",
+                  : "text-muted/70",
               )}
             >
               {item}
-            </span>
+            </button>
           ))}
         </div>
       </div>
@@ -98,10 +140,22 @@ export function MarketSidebar({
       </div>
 
       <div className="sticky bottom-0 mx-2 mb-2 flex h-9 items-center border border-white/8 bg-[#090914] rounded-lg text-[11px] text-muted overflow-hidden">
-        <button className="flex-1 flex items-center justify-center gap-1.5 h-full hover:bg-white/5 transition border-r border-white/8">
+        <button
+          type="button"
+          disabled
+          title="Split bottom coming soon"
+          aria-label="Split bottom coming soon"
+          className="flex-1 flex items-center justify-center gap-1.5 h-full border-r border-white/8 cursor-not-allowed opacity-60"
+        >
           <span>▤</span> Split bottom
         </button>
-        <button className="flex-1 flex items-center justify-center gap-1.5 h-full hover:bg-white/5 transition">
+        <button
+          type="button"
+          disabled
+          title="Split right coming soon"
+          aria-label="Split right coming soon"
+          className="flex-1 flex items-center justify-center gap-1.5 h-full cursor-not-allowed opacity-60"
+        >
           <span>◫</span> Split right
         </button>
       </div>

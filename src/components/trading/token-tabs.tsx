@@ -199,7 +199,9 @@ export function TokenTabs({
                         <p className="text-[10px] text-muted leading-none mt-1">{formatNumber(holder.balance)} tokens</p>
                       </td>
                       <td className="py-2 text-right font-semibold text-white">
-                        {holder.percentage.toFixed(2)}%
+                        {holder.percentage > 0
+                          ? `${holder.percentage.toFixed(2)}%`
+                          : "—"}
                       </td>
                     </tr>
                   )

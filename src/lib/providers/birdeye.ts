@@ -110,6 +110,49 @@ function asString(value: unknown) {
   return typeof value === "string" ? value : undefined
 }
 
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : undefined
+}
+
+function asTradeAmount(value: unknown) {
+  const record = asRecord(value)
+  if (record) {
+    return (
+      asNumber(record.uiAmount) ||
+      asNumber(record.ui_amount) ||
+      asNumber(record.amount) ||
+      asNumber(record.value) ||
+      asNumber(record.tokenAmount) ||
+      asNumber(record.token_amount) ||
+      asNumber(record.quantity)
+    )
+  }
+
+  return asNumber(value)
+}
+
+function findTradeTokenLeg(item: Record<string, unknown>, mint: string) {
+  for (const key of ["base", "quote", "from", "to"] as const) {
+    const leg = asRecord(item[key])
+    if (leg && asString(leg.address) === mint) return leg
+  }
+
+  return undefined
+}
+
+function extractTradePrice(item: Record<string, unknown>, tokenAmount: number, valueUsd: number) {
+  const tokenPrice =
+    asNumber(item.tokenPrice) ||
+    asNumber(item.token_price) ||
+    asNumber(item.price)
+
+  if (tokenPrice > 0) return tokenPrice
+  if (tokenAmount > 0 && valueUsd > 0) return valueUsd / tokenAmount
+  return 0
+}
+
 function mapSummary(entry: Record<string, unknown>): TokenSummary {
   const mint =
     asString(entry.address) ??
@@ -431,48 +474,54 @@ export async function getBirdeyeTrades(mint: string, limit: number): Promise<Tra
     sort_type: "desc",
   }, 5000)
 
-  return unwrapList(payload)
-    .map((entry, index) => {
-      const item = entry as Record<string, unknown>
-      const sideText =
-        asString(item.side) ??
-        asString(item.txType) ??
-        asString(item.tx_type) ??
-        "buy"
+  const mappedTrades = unwrapList(payload).map((entry, index) => {
+    const item = entry as Record<string, unknown>
+    const sideText =
+      asString(item.side) ??
+      asString(item.txType) ??
+      asString(item.tx_type) ??
+      "buy"
 
-      const tokenAmount =
-        asNumber(item.baseAmount) ||
-        asNumber(item.base_amount) ||
-        asNumber(item.amount)
-      const valueUsd =
-        asNumber(item.quoteAmount) ||
-        asNumber(item.quote_amount) ||
-        asNumber(item.value) ||
-        asNumber(item.valueUsd)
+    const tokenLeg = findTradeTokenLeg(item, mint)
+    const tokenAmount =
+      asTradeAmount(tokenLeg) ||
+      asNumber(item.baseAmount) ||
+      asNumber(item.base_amount) ||
+      asNumber(item.amount)
+    const price = extractTradePrice(item, tokenAmount, 0)
+    const valueUsd =
+      (tokenAmount > 0 && price > 0 ? tokenAmount * price : 0) ||
+      asNumber(item.quoteAmount) ||
+      asNumber(item.quote_amount) ||
+      asNumber(item.value) ||
+      asNumber(item.valueUsd)
+    const normalizedPrice = price || extractTradePrice(item, tokenAmount, valueUsd)
 
-      return {
-        signature:
-          asString(item.txHash) ??
-          asString(item.signature) ??
-          `${mint}-${index}`,
-        side: (sideText.toLowerCase().includes("sell") ? "sell" : "buy") as
-          | "buy"
-          | "sell",
-        tokenAmount,
-        valueUsd,
-        price: asNumber(item.price),
-        wallet:
-          asString(item.owner) ??
-          asString(item.fromOwner) ??
-          asString(item.user) ??
-          "Unknown",
-        timestamp:
-          asNumber(item.blockUnixTime) * 1000 ||
-          asNumber(item.unixTime) * 1000 ||
-          Date.now(),
-      }
-    })
-    .filter((trade) => trade.signature && trade.tokenAmount > 0 && trade.price > 0)
+    return {
+      signature:
+        asString(item.txHash) ??
+        asString(item.signature) ??
+        `${mint}-${index}`,
+      side: (sideText.toLowerCase().includes("sell") ? "sell" : "buy") as
+        | "buy"
+        | "sell",
+      tokenAmount,
+      valueUsd,
+      price: normalizedPrice,
+      wallet:
+        asString(item.owner) ??
+        asString(item.fromOwner) ??
+        asString(item.user) ??
+        "Unknown",
+      timestamp:
+        asNumber(item.blockUnixTime) * 1000 ||
+        asNumber(item.block_unix_time) * 1000 ||
+        asNumber(item.unixTime) * 1000 ||
+        Date.now(),
+    }
+  })
+
+  return mappedTrades.filter((trade) => trade.signature && trade.tokenAmount > 0 && trade.price > 0)
 }
 
 export async function getBirdeyeHolders(mint: string, limit: number): Promise<Holder[]> {

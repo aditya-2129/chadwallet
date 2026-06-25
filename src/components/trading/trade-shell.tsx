@@ -81,12 +81,19 @@ export function TradeShell({ mint }: { mint: string }) {
           limit: "12",
         }).toString()}`,
       ),
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const tokenQuery = useQuery({
     queryKey: ["token", mint],
     queryFn: () => readApi<TokenPayload>(`/api/token/${mint}`),
-    refetchInterval: isPageVisible ? 8000 : false,
+    staleTime: 30 * 1000,
+    refetchInterval: isPageVisible ? 30 * 1000 : false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const chartQuery = useQuery({
@@ -98,19 +105,31 @@ export function TradeShell({ mint }: { mint: string }) {
           limit: "96",
         }).toString()}`,
       ),
-    refetchInterval: isPageVisible ? 20000 : false,
+    staleTime: 60 * 1000,
+    refetchInterval: isPageVisible ? 60 * 1000 : false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const tradesQuery = useQuery({
     queryKey: ["trades", mint],
     queryFn: () => readApi<TradesPayload>(`/api/token/${mint}/trades?limit=18`),
-    refetchInterval: isPageVisible ? 8000 : false,
+    staleTime: 30 * 1000,
+    refetchInterval: isPageVisible ? 30 * 1000 : false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const holdersQuery = useQuery({
     queryKey: ["holders", mint],
     queryFn: () => readApi<HoldersPayload>(`/api/token/${mint}/holders?limit=12`),
-    refetchInterval: isPageVisible ? 60000 : false,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: isPageVisible ? 5 * 60 * 1000 : false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const positionQuery = useQuery({
@@ -122,6 +141,9 @@ export function TradeShell({ mint }: { mint: string }) {
           address: address ?? "",
         }).toString()}`,
       ),
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const solPositionQuery = useQuery({
@@ -133,6 +155,9 @@ export function TradeShell({ mint }: { mint: string }) {
           address: address ?? "",
         }).toString()}`,
       ),
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const usdcPositionQuery = useQuery({
@@ -144,6 +169,9 @@ export function TradeShell({ mint }: { mint: string }) {
           address: address ?? "",
         }).toString()}`,
       ),
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const watchlistQuery = useQuery({
@@ -155,6 +183,9 @@ export function TradeShell({ mint }: { mint: string }) {
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       })
     },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const watchlistMutation = useMutation({
@@ -340,7 +371,15 @@ export function TradeShell({ mint }: { mint: string }) {
                       <h2 className="text-base font-bold text-white leading-none">
                         {token?.symbol ?? "Loading"}
                       </h2>
-                      <Star className="size-3.5 text-muted cursor-pointer" />
+                      <button
+                        type="button"
+                        disabled
+                        title="Watchlist coming soon"
+                        aria-label="Watchlist coming soon"
+                        className="inline-flex cursor-not-allowed items-center justify-center rounded-full text-muted/70 opacity-60"
+                      >
+                        <Star className="size-3.5" />
+                      </button>
                     </div>
                     <div className="mt-0.5 flex items-center gap-2 text-[11px] text-muted">
                       <span className="font-mono">
@@ -524,13 +563,31 @@ export function TradeShell({ mint }: { mint: string }) {
                   ))}
                 </div>
                 <div className="flex items-center gap-1 text-muted">
-                  <button className="rounded-lg p-2 hover:bg-white/5 hover:text-white" aria-label="Chart settings">
+                  <button
+                    type="button"
+                    disabled
+                    title="Chart settings coming soon"
+                    aria-label="Chart settings coming soon"
+                    className="rounded-lg p-2 opacity-50 cursor-not-allowed"
+                  >
                     <Settings2 className="size-4" />
                   </button>
-                  <button className="rounded-lg p-2 hover:bg-white/5 hover:text-white" aria-label="Reset chart">
+                  <button
+                    type="button"
+                    disabled
+                    title="Reset chart coming soon"
+                    aria-label="Reset chart coming soon"
+                    className="rounded-lg p-2 opacity-50 cursor-not-allowed"
+                  >
                     <RotateCcw className="size-4" />
                   </button>
-                  <button className="rounded-lg p-2 hover:bg-white/5 hover:text-white" aria-label="Chart indicators">
+                  <button
+                    type="button"
+                    disabled
+                    title="Chart indicators coming soon"
+                    aria-label="Chart indicators coming soon"
+                    className="rounded-lg p-2 opacity-50 cursor-not-allowed"
+                  >
                     <BarChart3 className="size-4" />
                   </button>
                 </div>
@@ -693,7 +750,15 @@ function MarketFooterTicker({
         </div>
         <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
         <Link href="/terms" className="hover:text-white transition">Terms</Link>
-        <a href="https://discord.gg" target="_blank" rel="noreferrer" className="hover:text-white transition">Help</a>
+        <button
+          type="button"
+          disabled
+          title="Help coming soon"
+          aria-label="Help coming soon"
+          className="cursor-not-allowed text-muted/70 transition"
+        >
+          Help
+        </button>
         <button 
           onClick={(e) => {
             const footer = e.currentTarget.closest("div.fixed");
@@ -805,7 +870,13 @@ function TokenInsightPanel({
       />
 
       <div className="mt-4 flex justify-center">
-        <button className="rounded-full bg-white/5 hover:bg-white/10 px-4 py-1 text-xs font-semibold text-white transition cursor-pointer">
+        <button
+          type="button"
+          disabled
+          title="View more coming soon"
+          aria-label="View more coming soon"
+          className="rounded-full bg-white/5 px-4 py-1 text-xs font-semibold text-white/70 opacity-60 cursor-not-allowed"
+        >
           View more
         </button>
       </div>
