@@ -7,16 +7,13 @@ import { useEffect, useMemo, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   AlertTriangle,
-  BarChart3,
   Check,
   Copy,
-  RotateCcw,
   Search,
-  Settings2,
   Star,
 } from "lucide-react"
 import { MarketSidebar } from "@/components/trading/market-sidebar"
-import { CandlestickChart } from "@/components/trading/candlestick-chart"
+import { TradingViewAdvancedChart } from "@/components/trading/tradingview-advanced-chart"
 import { TokenTabs } from "@/components/trading/token-tabs"
 import { TradePanel } from "@/components/trading/trade-panel"
 import { TokenAvatar } from "@/components/token-avatar"
@@ -25,7 +22,6 @@ import { useAuth } from "@/components/auth-context"
 import { cn, formatCurrency, shortenAddress } from "@/lib/utils"
 import { SOL_MINT, USDC_MINT } from "@/lib/mock-data"
 import type {
-  ChartPayload,
   HoldersPayload,
   MarketPayload,
   PositionPayload,
@@ -52,7 +48,6 @@ export function TradeShell({ mint }: { mint: string }) {
   const queryClient = useQueryClient()
   const [search, setSearch] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
-  const [interval, setInterval] = useState("1m")
   const [isPageVisible, setIsPageVisible] = useState(true)
   const [mintCopied, setMintCopied] = useState(false)
   const [pendingWatchlist, setPendingWatchlist] = useState<{ mint: string; watched: boolean } | null>(null)
@@ -91,22 +86,6 @@ export function TradeShell({ mint }: { mint: string }) {
     queryFn: () => readApi<TokenPayload>(`/api/token/${mint}`),
     staleTime: 30 * 1000,
     refetchInterval: isPageVisible ? 30 * 1000 : false,
-    refetchIntervalInBackground: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  })
-
-  const chartQuery = useQuery({
-    queryKey: ["chart", mint, interval],
-    queryFn: () =>
-      readApi<ChartPayload>(
-        `/api/token/${mint}/chart?${new URLSearchParams({
-          interval,
-          limit: "96",
-        }).toString()}`,
-      ),
-    staleTime: 60 * 1000,
-    refetchInterval: isPageVisible ? 60 * 1000 : false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -263,8 +242,19 @@ export function TradeShell({ mint }: { mint: string }) {
     setTimeout(() => setMintCopied(false), 2000)
   }
 
+  const handleToggleWatchlist = (tokenMint: string) => {
+    const watched = watchlist.has(tokenMint)
+    if (!authenticated || !address) {
+      setPendingWatchlist({ mint: tokenMint, watched })
+      login()
+      return
+    }
+
+    watchlistMutation.mutate({ tokenMint, watched })
+  }
+
   return (
-    <div className="min-h-screen bg-[#05050d] pb-24 lg:pb-9">
+    <div className="min-h-screen bg-[#05050d] pb-24 lg:pb-0">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05050d]/92 backdrop-blur-xl">
         {/* Mobile Header: visible below lg */}
         <div className="flex lg:hidden h-14 items-center justify-between px-4">
@@ -336,20 +326,8 @@ export function TradeShell({ mint }: { mint: string }) {
           <MarketSidebar
             mint={mint}
             market={marketQuery.data}
-            search={search}
-            onSearchChange={setSearch}
             watchlist={watchlist}
-            onToggleWatchlist={(tokenMint) => {
-              if (!authenticated || !address) {
-                setPendingWatchlist({ mint: tokenMint, watched: watchlist.has(tokenMint) })
-                login()
-                return
-              }
-              watchlistMutation.mutate({
-                tokenMint,
-                watched: watchlist.has(tokenMint),
-              })
-            }}
+            onToggleWatchlist={handleToggleWatchlist}
             watchlistPending={
               watchlistMutation.isPending
                 ? watchlistMutation.variables?.tokenMint
@@ -373,12 +351,21 @@ export function TradeShell({ mint }: { mint: string }) {
                       </h2>
                       <button
                         type="button"
-                        disabled
-                        title="Watchlist coming soon"
-                        aria-label="Watchlist coming soon"
-                        className="inline-flex cursor-not-allowed items-center justify-center rounded-full text-muted/70 opacity-60"
+                        onClick={() => handleToggleWatchlist(mint)}
+                        disabled={
+                          watchlistMutation.isPending &&
+                          watchlistMutation.variables?.tokenMint === mint
+                        }
+                        title={watchlist.has(mint) ? "Remove from watchlist" : "Add to watchlist"}
+                        aria-label={watchlist.has(mint) ? "Remove from watchlist" : "Add to watchlist"}
+                        className="inline-flex items-center justify-center rounded-full text-muted transition hover:text-white disabled:cursor-wait disabled:opacity-50"
                       >
-                        <Star className="size-3.5" />
+                        <Star
+                          className={cn(
+                            "size-3.5",
+                            watchlist.has(mint) && "fill-chad-mint text-chad-mint",
+                          )}
+                        />
                       </button>
                     </div>
                     <div className="mt-0.5 flex items-center gap-2 text-[11px] text-muted">
@@ -543,91 +530,12 @@ export function TradeShell({ mint }: { mint: string }) {
             )}
             </div>
 
-            {/* Chart Loading/Error Boundary */}
             <section>
-              <div className="flex h-14 flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4">
-                <div className="flex items-center gap-1">
-                  {["1m", "5m", "15m", "1H", "4H", "1D"].map((item) => (
-                    <button
-                      key={item}
-                      onClick={() => setInterval(item)}
-                      className={cn(
-                        "rounded-md px-3 py-1.5 text-xs font-semibold transition",
-                        interval === item
-                          ? "bg-white text-[#020817]"
-                          : "text-muted hover:text-white",
-                      )}
-                    >
-                      {item}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-1 text-muted">
-                  <button
-                    type="button"
-                    disabled
-                    title="Chart settings coming soon"
-                    aria-label="Chart settings coming soon"
-                    className="rounded-lg p-2 opacity-50 cursor-not-allowed"
-                  >
-                    <Settings2 className="size-4" />
-                  </button>
-                  <button
-                    type="button"
-                    disabled
-                    title="Reset chart coming soon"
-                    aria-label="Reset chart coming soon"
-                    className="rounded-lg p-2 opacity-50 cursor-not-allowed"
-                  >
-                    <RotateCcw className="size-4" />
-                  </button>
-                  <button
-                    type="button"
-                    disabled
-                    title="Chart indicators coming soon"
-                    aria-label="Chart indicators coming soon"
-                    className="rounded-lg p-2 opacity-50 cursor-not-allowed"
-                  >
-                    <BarChart3 className="size-4" />
-                  </button>
-                </div>
-              </div>
-
-              {chartQuery.isPending ? (
-                <div className="flex h-[450px] animate-pulse items-center justify-center bg-[#05050d]">
-                  <span className="text-xs text-muted uppercase tracking-[0.2em]">Loading chart candles…</span>
-                </div>
-              ) : chartQuery.isError ? (
-                <div className="flex h-[450px] flex-col items-center justify-center bg-[#120a0c] p-6 text-center">
-                  <AlertTriangle className="size-8 text-chad-red mb-3" />
-                  <p className="text-sm text-chad-red font-semibold">Failed to load chart data</p>
-                  <p className="text-xs text-muted mt-1">
-                     {chartQuery.error?.message || "Candle feed unavailable."}
-                  </p>
-                  <button
-                    onClick={() => chartQuery.refetch()}
-                    className="mt-4 rounded-xl bg-chad-red/15 hover:bg-chad-red/25 px-4 py-2 text-xs font-semibold text-white transition"
-                  >
-                    Retry loading chart
-                  </button>
-                </div>
-              ) : (
-                <CandlestickChart
-                  data={chartQuery.data?.items ?? []}
-                  symbol={token?.symbol ?? "TOKEN"}
-                />
-              )}
-              <div className="flex h-16 items-center justify-between border-b border-white/10 px-5 text-xs">
-                <div className="flex items-center gap-5 font-semibold text-white">
-                  <span>1D</span><span>1W</span><span>1M</span><span>3M</span><span>1Y</span>
-                </div>
-                <div className="flex items-center gap-3 text-muted">
-                  <span>UTC</span><span>%</span><span>log</span>
-                  <span className="rounded-lg bg-white/8 px-2 py-1 text-white">auto</span>
-                </div>
-              </div>
+              <TradingViewAdvancedChart
+                mint={mint}
+                symbol={token?.symbol ?? "TOKEN"}
+              />
             </section>
-
             <TokenTabs
               token={tokenQuery.data}
               trades={tradesQuery.data}
@@ -692,84 +600,6 @@ export function TradeShell({ mint }: { mint: string }) {
           </div>
         </div>
       )}
-      <MarketFooterTicker
-        items={marketQuery.data?.items ?? []}
-        activeMint={mint}
-      />
-    </div>
-  )
-}
-
-function MarketFooterTicker({
-  items,
-  activeMint,
-}: {
-  items: MarketPayload["items"]
-  activeMint: string
-}) {
-  if (!items.length) return null
-  const tickerItems = [...items, ...items]
-
-  return (
-    <div className="fixed inset-x-0 bottom-0 z-40 hidden h-10 border-t border-white/10 bg-[#05050d]/95 backdrop-blur-xl xl:flex items-center justify-between overflow-hidden">
-      <div className="flex-1 overflow-hidden h-full flex items-center">
-        <div className="ticker-track-left flex h-full w-max items-center">
-          {tickerItems.map((item, index) => (
-            <Link
-              key={`${item.mint}-${index}`}
-              href={`/trade/${item.mint}`}
-              className={cn(
-                "flex h-full min-w-[170px] items-center gap-2 border-r border-white/8 px-4 text-xs transition hover:bg-white/5",
-                item.mint === activeMint && "bg-white/[0.045]",
-              )}
-            >
-              <TokenAvatar
-                symbol={item.symbol}
-                imageUrl={item.imageUrl}
-                className="size-4"
-              />
-              <span className="font-semibold text-white">{item.symbol}</span>
-              <span className="text-muted">{formatCurrency(item.price)}</span>
-              <span
-                className={
-                  item.change24h >= 0 ? "text-chad-green" : "text-[#ff4b55]"
-                }
-              >
-                {item.change24h >= 0 ? "▲" : "▼"}
-                {Math.abs(item.change24h).toFixed(2)}%
-              </span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="relative shrink-0 flex items-center gap-3.5 h-full px-5 bg-[#05050d] border-l border-white/10 text-[11px] text-muted font-medium z-10 shadow-[-12px_0_24px_rgba(5,5,13,0.9)]">
-        <div className="flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-chad-green animate-pulse" />
-          <span className="text-white font-semibold">Stable</span>
-        </div>
-        <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
-        <Link href="/terms" className="hover:text-white transition">Terms</Link>
-        <button
-          type="button"
-          disabled
-          title="Help coming soon"
-          aria-label="Help coming soon"
-          className="cursor-not-allowed text-muted/70 transition"
-        >
-          Help
-        </button>
-        <button 
-          onClick={(e) => {
-            const footer = e.currentTarget.closest("div.fixed");
-            if (footer) footer.classList.add("hidden");
-          }}
-          className="hover:text-white transition p-1 ml-0.5 cursor-pointer text-xs"
-          title="Close footer"
-        >
-          ✕
-        </button>
-      </div>
     </div>
   )
 }

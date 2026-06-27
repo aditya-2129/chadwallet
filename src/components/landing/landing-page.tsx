@@ -21,6 +21,114 @@ type TrendingResponse = {
 
 const heroToken = "So11111111111111111111111111111111111111112";
 
+const flowCards = [
+  {
+    label: "BUY / SELL",
+    title: "buy and sell trending tokens",
+    description: "Move from discovery to chart context to trade execution without losing the thread.",
+    image: "/brand/buy-sell-4.png",
+    alt: "ChadWallet flow showing trending token discovery, charts, and buy sell screens",
+    tone: "bg-[#0e0e16]",
+  },
+  {
+    label: "KOL FEED",
+    title: "follow traders before the market reacts",
+    description: "Use KOL activity, profiles, holdings, and charts as one research loop.",
+    image: "/brand/kol-4.png",
+    alt: "ChadWallet flow showing KOL trader feed, trader stats, holdings, and token screens",
+    tone: "bg-[#0c162b]",
+  },
+  {
+    label: "PORTFOLIO",
+    title: "manage your assets in one place",
+    description: "Portfolio, deposit, wallet, and withdrawal flows stay close to the trade.",
+    image: "/brand/portfolio-4.png",
+    alt: "ChadWallet flow showing portfolio, deposit, wallet, and withdrawal screens",
+    tone: "bg-[#0d0d15]",
+  },
+  {
+    label: "LAUNCH",
+    title: "launch a memecoin from a tweet",
+    description: "Capture social momentum, fund the launch, and move straight into the new market.",
+    image: "/brand/launch-4.png",
+    alt: "ChadWallet flow showing a social post, launch form, funding, and token screen",
+    tone: "bg-[#0a161e]",
+  },
+  {
+    label: "X TRENDS",
+    title: "catch early trends on X",
+    description: "Follow live social signal, validate the chart, and size the opportunity early.",
+    image: "/brand/memecoin-4.png",
+    alt: "ChadWallet flow showing early X trends and token research screens",
+    tone: "bg-[#0c1220]",
+  },
+  {
+    label: "RELAUNCH",
+    title: "relaunch a memecoin fast",
+    description: "Bring a dormant chart back to life with relaunch, funding, and trade screens.",
+    image: "/brand/relaunch-4.png",
+    alt: "ChadWallet flow showing relaunch, funding, and trade execution screens",
+    tone: "bg-[#0b162c]",
+  },
+];
+
+const appScreens = [
+  {
+    title: "Find the next 100x memecoin",
+    description: "A simple first screen for new traders entering ChadWallet.",
+    image: "/brand/app-splash.png",
+    alt: "ChadWallet welcome screen with a phone mockup",
+  },
+  {
+    title: "Discover active traders",
+    description: "Monitor large trades and top traders in real time.",
+    image: "/brand/app-discover.png",
+    alt: "ChadWallet discover screen showing active Solana traders",
+  },
+  {
+    title: "Access tokens early",
+    description: "Search ranked tokens before momentum becomes obvious.",
+    image: "/brand/app-search.png",
+    alt: "ChadWallet token search screen with ranked tokens",
+  },
+  {
+    title: "See what is happening on X",
+    description: "Keep social context beside the chart and token story.",
+    image: "/brand/app-x.png",
+    alt: "ChadWallet X feed screen with a social post and market chart",
+  },
+  {
+    title: "Meet top traders",
+    description: "Review KOL profiles, stats, holdings, and follow signals.",
+    image: "/brand/app-kol.png",
+    alt: "ChadWallet KOL profile screen with trader performance",
+  },
+  {
+    title: "Track your assets",
+    description: "Watch holdings, memes, rewards, and wallet actions in one place.",
+    image: "/brand/app-portfolio.png",
+    alt: "ChadWallet portfolio screen showing wallet value and holdings",
+  },
+  {
+    title: "Fast trading in seconds",
+    description: "Buy trending tokens from a focused chart and action screen.",
+    image: "/brand/app-token.png",
+    alt: "ChadWallet token trading screen with a chart and buy controls",
+  },
+  {
+    title: "Secure deposits and withdrawals",
+    description: "Fund the wallet without leaving the trading flow.",
+    image: "/brand/app-deposit.png",
+    alt: "ChadWallet deposit screen with a dollar amount input",
+  },
+  {
+    title: "Launch memecoins in one tap",
+    description: "Turn names, images, and social ideas into new coins instantly.",
+    image: "/brand/app-launch.png",
+    alt: "ChadWallet launch screen for creating a meme coin",
+  },
+];
+
 function MobileMenu({
   open,
   onClose,
@@ -78,6 +186,80 @@ function MobileMenu({
   );
 }
 
+function FlowCard({
+  label,
+  title,
+  description,
+  image,
+  alt,
+  tone,
+}: (typeof flowCards)[number]) {
+  return (
+    <div
+      className={`group flex h-[390px] min-w-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/5 pb-0 pt-7 transition-all duration-300 hover:border-white/12 lg:h-[410px] ${tone}`}
+    >
+      <div className="px-7 lg:px-8">
+        <div className="font-mono text-xs font-bold uppercase tracking-wider text-[#606af7]">
+          {label}
+        </div>
+        <h3 className="mt-2 text-[26px] font-black leading-[1.06] tracking-tight text-white">
+          {title}
+        </h3>
+        <p className="mt-4 text-sm leading-5 text-[#D1D8FF99]">
+          {description}
+        </p>
+      </div>
+      <div className="mt-8 w-full overflow-hidden px-4">
+        <div className="overflow-hidden rounded-t-[16px] border-x border-t border-white/10 shadow-2xl transition-all duration-300 group-hover:translate-y-[-6px] group-hover:border-white/15">
+          <Image
+            loading="lazy"
+            src={image}
+            alt={alt}
+            width={3840}
+            height={2160}
+            className="w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+            sizes="(max-width: 1024px) 100vw, 33vw"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AppScreenCard({
+  title,
+  description,
+  image,
+  alt,
+}: (typeof appScreens)[number]) {
+  return (
+    <article className="group flex min-h-[430px] flex-col overflow-hidden rounded-[24px] border border-white/5 bg-[#0e0e16] pt-6 transition-all duration-300 hover:border-white/12">
+      <div className="px-6">
+        <h3 className="text-[24px] font-black leading-[1.05] tracking-tight text-white">
+          {title}
+        </h3>
+        <p className="mt-2 text-sm leading-5 text-[#D1D8FF99]">
+          {description}
+        </p>
+      </div>
+      <div className="relative mt-5 flex flex-1 items-end justify-center overflow-hidden px-5">
+        <div className="h-full w-full rounded-t-[20px] border-x border-t border-white/10 bg-[#2ca8f3] p-2.5 transition-transform duration-300 group-hover:translate-y-[-6px]">
+          <div className="relative h-full w-full overflow-hidden rounded-t-[12px]">
+            <Image
+              loading="lazy"
+              src={image}
+              alt={alt}
+              fill
+              className="object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.02]"
+              sizes="(max-width: 1024px) 100vw, 33vw"
+            />
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -94,7 +276,6 @@ export function LandingPage() {
 
   // Split tokens into two groups for top vs bottom tickers
   const midpoint = Math.ceil(trendingTokens.length / 2);
-  const topTokens = trendingTokens.slice(0, midpoint);
   const bottomTokens = trendingTokens.slice(midpoint);
 
   return (
@@ -186,14 +367,7 @@ export function LandingPage() {
         <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
       </header>
 
-      {/* ═══════════════════ TOP TOKEN BANNER ═══════════════════ */}
-      {topTokens.length > 0 && (
-        <TokenTickerStrip
-          direction="left"
-          tokens={topTokens}
-          label="Trending"
-        />
-      )}
+
 
       {/* ═══════════════════ MAIN ═══════════════════ */}
       <main className="flex flex-1 flex-col items-center justify-center w-full h-full">
@@ -265,7 +439,7 @@ export function LandingPage() {
         </div>
 
         {/* Astronaut — mobile */}
-        <div className="relative -mt-16 aspect-square w-[88vw] max-w-[600px] lg:hidden">
+        <div className="relative -mt-16 aspect-square w-[58vw] max-w-[380px] lg:hidden">
           <Image
             src="/brand/astronaut-mobile.webp"
             alt=""
@@ -275,7 +449,7 @@ export function LandingPage() {
           />
         </div>
         {/* Astronaut — desktop */}
-        <div className="relative hidden aspect-square w-[82vw] max-w-[760px] -mt-20 lg:block">
+        <div className="relative hidden aspect-square w-[50vw] max-w-[480px] -mt-20 lg:block">
           <Image
             src="/brand/astronaut.webp"
             alt=""
@@ -389,83 +563,114 @@ export function LandingPage() {
           {/* Section heading — desktop only */}
           <div className="hidden lg:flex flex-col gap-3">
             <h2 className="text-[60px] tracking-tighter leading-15">never miss out again</h2>
-            <p className="text-[#EAEDFF99] leading-6 text-[28px]">a social-first trading app with live market energy</p>
+            <p className="text-[#EAEDFF99] leading-6 text-[28px]">ChadWallet flows for discovery, social signal, launches, and fast Solana trading</p>
           </div>
 
           <div className="flex flex-col gap-3 lg:gap-6">
-            {/* Row 1 */}
             <div className="flex flex-col lg:flex-row gap-3 lg:gap-6 items-start">
-              {/* Leaderboard */}
-              <div className="group flex-1 min-w-0 pt-8 pb-0 rounded-[24px] flex flex-col overflow-hidden border border-white/5 hover:border-white/12 transition-all duration-300 bg-[#0e0e16] h-[430px] lg:h-[450px]">
-                <div className="font-mono text-xs uppercase tracking-wider text-[#606af7] px-8 font-bold">LEADERBOARD</div>
-                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">become a legend, top the leaderboard</h3>
-                <div className="relative w-full flex-1 mt-6 flex justify-end items-end overflow-hidden">
-                  <div className="w-[85%] h-[92%] mx-auto rounded-t-[20px] border-x border-t border-white/10 bg-[#090914] pt-2.5 px-2.5 shadow-2xl transition-all duration-300 group-hover:translate-y-[-6px] group-hover:border-white/15">
-                    <div className="w-full h-full rounded-t-[12px] overflow-hidden relative">
-                      <Image loading="lazy" src="/brand/portfolio.png" alt="Leaderboard preview" fill className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]" sizes="(max-width: 1024px) 100vw, 33vw" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Feed */}
-              <div className="group flex-1 min-w-0 pt-8 pb-0 rounded-[24px] flex flex-col overflow-hidden border border-white/5 hover:border-white/12 transition-all duration-300 bg-[#0c162b] h-[430px] lg:h-[450px]">
-                <div className="font-mono text-xs uppercase tracking-wider text-[#606af7] px-8 font-bold">FEED</div>
-                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">discover and follow top traders</h3>
-                <div className="relative w-full flex-1 mt-6 overflow-hidden">
-                  <Image loading="lazy" src="/brand/kol.png" alt="Social feed preview" fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 33vw" />
-                </div>
-              </div>
-              
-              {/* Alerts */}
-              <div className="group flex-1 min-w-0 pt-8 pb-0 rounded-[24px] flex flex-col overflow-hidden border border-white/5 hover:border-white/12 transition-all duration-300 bg-[#0d0d15] h-[430px] lg:h-[450px]">
-                <div className="font-mono text-xs uppercase tracking-wider text-[#606af7] px-8 font-bold">ALERTS</div>
-                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">real time notifications for what the best are buying</h3>
-                <div className="relative w-full flex-1 mt-6 px-4 flex items-end overflow-hidden">
-                  <div className="w-full h-[92%] rounded-t-[16px] border-x border-t border-white/10 bg-[#090914] overflow-hidden shadow-2xl transition-all duration-300 group-hover:translate-y-[-6px] group-hover:border-white/15 relative">
-                    <Image loading="lazy" src="/brand/buy-sell.png" alt="Alerts preview" fill className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]" sizes="(max-width: 1024px) 100vw, 33vw" />
-                  </div>
-                </div>
-              </div>
+              {flowCards.slice(0, 3).map((card) => (
+                <FlowCard key={card.label} {...card} />
+              ))}
             </div>
 
-            {/* Row 2 */}
             <div className="flex flex-col lg:flex-row gap-3 lg:gap-6 items-start">
-              {/* Easy Onboarding */}
-              <div className="group flex-1 min-w-0 pt-8 pb-0 rounded-[24px] flex flex-col overflow-hidden border border-white/5 hover:border-white/12 transition-all duration-300 bg-[#0a161e] h-[430px] lg:h-[450px]">
-                <div className="font-mono text-xs uppercase tracking-wider text-[#606af7] px-8 font-bold">EASY ONBOARDING</div>
-                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">create an account in an instant</h3>
-                <div className="relative w-full flex-1 mt-6 flex justify-end items-end overflow-hidden">
-                  <div className="w-[85%] h-[92%] mx-auto rounded-t-[20px] border-x border-t border-white/10 bg-[#090914] pt-2.5 px-2.5 shadow-2xl transition-all duration-300 group-hover:translate-y-[-6px] group-hover:border-white/15">
-                    <div className="w-full h-full rounded-t-[12px] overflow-hidden relative">
-                      <Image loading="lazy" src="/brand/splash.png" alt="Sign in preview" fill className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]" sizes="(max-width: 1024px) 100vw, 33vw" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Zero Complexity */}
-              <div className="group flex-1 min-w-0 pt-8 pb-0 rounded-[24px] flex flex-col overflow-hidden border border-white/5 hover:border-white/12 transition-all duration-300 bg-[#0c1220] h-[430px] lg:h-[450px]">
-                <div className="font-mono text-xs uppercase tracking-wider text-[#606af7] px-8 font-bold">ZERO COMPLEXITY</div>
-                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">built for fast Solana flows</h3>
-                <div className="relative w-full flex-1 mt-6 overflow-hidden">
-                  <Image loading="lazy" src="/brand/token.png" alt="Token preview" fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 33vw" />
-                </div>
-              </div>
-              
-              {/* One Click to Buy */}
-              <div className="group flex-1 min-w-0 pt-8 pb-0 rounded-[24px] flex flex-col overflow-hidden border border-white/5 hover:border-white/12 transition-all duration-300 bg-[#0b162c] h-[430px] lg:h-[450px]">
-                <div className="font-mono text-xs uppercase tracking-wider text-[#606af7] px-8 font-bold">ONE CLICK TO BUY</div>
-                <h3 className="text-[26px] leading-[1.15] font-black tracking-tight text-white px-8 mt-1">fund your wallet fast</h3>
-                <div className="relative w-full flex-1 mt-6 overflow-hidden">
-                  <Image loading="lazy" src="/brand/launch.png" alt="Funding flow preview" fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 33vw" />
-                </div>
-              </div>
+              {flowCards.slice(3).map((card) => (
+                <FlowCard key={card.label} {...card} />
+              ))}
             </div>
           </div>
         </div>
 
         {/* ── CTA / spinning circles section ── */}
+        <section className="px-3 lg:px-20 pt-16 lg:pt-24 flex flex-col self-stretch min-[500px]:self-center gap-10 max-w-[1250px]">
+          <div className="relative overflow-hidden rounded-[20px] border border-white/10 bg-[#080811] px-5 py-8 lg:px-12 lg:py-10">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/20" />
+            <div className="pointer-events-none absolute bottom-0 left-0 h-44 w-80 bg-chad-green/5 blur-3xl" />
+            <div className="relative grid gap-10 lg:min-h-[620px] lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-semibold text-[#D1D8FFB3]">
+                  <span>App Store</span>
+                  <span className="h-1 w-1 rounded-full bg-[#D1D8FF55]" aria-hidden="true" />
+                  <span>Google Play</span>
+                  <span className="h-1 w-1 rounded-full bg-[#D1D8FF55]" aria-hidden="true" />
+                  <span className="text-chad-green">Live on Solana</span>
+                </div>
+                <div>
+                  <h2 className="text-[42px] leading-[0.98] tracking-tighter text-white lg:text-[64px] lg:leading-[0.95]">
+                    built for mobile moves
+                  </h2>
+                  <p className="mt-4 max-w-xl text-[#D1D8FFCC] text-xl leading-7 lg:text-[26px]">
+                    Scan trader activity, open the chart, fund the wallet, and place the trade without leaving ChadWallet.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href="https://apps.apple.com/us/app/chadwallet/id6757367474"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/12 bg-white/[0.07] px-5 text-sm font-bold text-white transition hover:border-white/20 hover:bg-white/[0.1]"
+                    aria-label="Download ChadWallet on the App Store"
+                  >
+                    <Download className="size-4" />
+                    App Store
+                  </a>
+                  <a
+                    href="https://play.google.com/store/apps/details?id=xyz.chadwallet.www"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#5964f2] px-5 text-sm font-bold text-white transition hover:bg-[#6871ff]"
+                    aria-label="Get ChadWallet on Google Play"
+                  >
+                    <Download className="size-4" />
+                    Google Play
+                  </a>
+                </div>
+              </div>
+
+              <div className="relative mx-auto h-[500px] w-full max-w-[560px] lg:h-[600px]">
+                <div className="absolute left-4 top-16 hidden w-[38%] rotate-[-3deg] overflow-hidden rounded-[18px] border border-white/10 bg-[#1f9ee7] p-1.5 opacity-75 sm:block">
+                  <Image
+                    src="/brand/app-discover.png"
+                    alt="ChadWallet discover screen showing active traders"
+                    width={1242}
+                    height={2688}
+                    className="w-full rounded-[13px]"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="absolute bottom-14 right-4 hidden w-[38%] rotate-[3deg] overflow-hidden rounded-[18px] border border-white/10 bg-[#1f9ee7] p-1.5 opacity-75 sm:block">
+                  <Image
+                    src="/brand/app-token.png"
+                    alt="ChadWallet token trading screen with chart and buy controls"
+                    width={1242}
+                    height={2688}
+                    className="w-full rounded-[13px]"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="absolute inset-x-0 top-4 mx-auto w-[70%] max-w-[292px] rounded-[24px] border border-white/12 bg-[#101018] p-2.5">
+                  <video
+                    className="aspect-[334/720] w-full rounded-[17px] bg-black object-cover"
+                    src="/brand/chadwallet.mp4#t=14"
+                    poster="/brand/app-discover.png"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    aria-label="ChadWallet mobile app video showing trading flows"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            {appScreens.map((screen) => (
+              <AppScreenCard key={screen.title} {...screen} />
+            ))}
+          </div>
+        </section>
+
         <div id="download" className="relative self-stretch flex items-center justify-center py-40 lg:py-0">
           <Image
             loading="lazy"

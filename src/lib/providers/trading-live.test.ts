@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest"
 import { mintSchema } from "@/app/api/_utils"
-import { getBirdeyeTrades, mapInterval } from "@/lib/providers/birdeye"
+import { getBirdeyeChart, getBirdeyeTrades, mapInterval } from "@/lib/providers/birdeye"
 import { JupiterError } from "@/lib/providers/jupiter"
 import { getAlchemyPositions } from "@/lib/providers/alchemy"
 import { loadPosition } from "@/lib/providers/trading"
@@ -31,6 +31,65 @@ describe("Birdeye Interval Mapping", () => {
     expect(mapInterval("4H")).toBe("4H")
     expect(mapInterval("1d")).toBe("1D")
     expect(mapInterval("1D")).toBe("1D")
+  })
+})
+
+describe("Birdeye Chart Mapping", () => {
+  beforeEach(() => {
+    process.env.BIRDEYE_API_KEY = "mock-birdeye-key"
+  })
+
+  afterEach(() => {
+    global.fetch = originalFetch
+    delete process.env.BIRDEYE_API_KEY
+  })
+
+  it("forwards TradingView history time_to into the OHLCV request", async () => {
+    global.fetch = vi.fn().mockImplementation((url: string) => {
+      const requestUrl = new URL(url)
+      expect(requestUrl.pathname).toBe("/defi/v3/ohlcv")
+      expect(requestUrl.searchParams.get("type")).toBe("1m")
+      expect(requestUrl.searchParams.get("count_limit")).toBe("2")
+      expect(requestUrl.searchParams.get("time_to")).toBe("1710000000")
+
+      return Promise.resolve({
+        status: 200,
+        headers: {
+          get: () => null,
+        },
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            data: {
+              items: [
+                {
+                  unix_time: 1709999940,
+                  o: 1,
+                  h: 2,
+                  l: 0.5,
+                  c: 1.5,
+                  v: 100,
+                },
+              ],
+            },
+          }),
+      })
+    })
+
+    await expect(
+      getBirdeyeChart("So11111111111111111111111111111111111111112", "1m", 2, {
+        timeTo: 1710000000,
+      }),
+    ).resolves.toEqual([
+      {
+        time: 1709999940,
+        open: 1,
+        high: 2,
+        low: 0.5,
+        close: 1.5,
+        volume: 100,
+      },
+    ])
   })
 })
 

@@ -437,6 +437,7 @@ export async function getBirdeyeChart(
   mint: string,
   interval: string,
   limit: number,
+  options: { timeTo?: number } = {},
 ): Promise<OhlcvBar[]> {
   const normalizedInterval = mapInterval(interval)
   const payload = await fetchBirdeye<unknown>("/defi/v3/ohlcv", {
@@ -444,7 +445,7 @@ export async function getBirdeyeChart(
     type: normalizedInterval,
     mode: "count",
     count_limit: limit,
-    time_to: Math.floor(Date.now() / 1000),
+    time_to: options.timeTo ?? Math.floor(Date.now() / 1000),
   }, 20000)
 
   return unwrapList(payload)

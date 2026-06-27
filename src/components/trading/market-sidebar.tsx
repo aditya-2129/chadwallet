@@ -1,10 +1,24 @@
 "use client"
 
 import Link from "next/link"
-import { Bell, ChevronLeft, Star } from "lucide-react"
+import { useSearchParams } from "next/navigation"
+import { Star } from "lucide-react"
 import { TokenAvatar } from "@/components/token-avatar"
 import { cn, formatCurrency } from "@/lib/utils"
 import type { MarketPayload } from "@/components/trading/types"
+
+type MarketFilter = "trending" | "gainers" | "largest" | "watchlist"
+
+const marketFilters: Array<{ id: MarketFilter; label: string }> = [
+  { id: "trending", label: "Trending" },
+  { id: "gainers", label: "Gainers" },
+  { id: "largest", label: "Market cap" },
+  { id: "watchlist", label: "Watchlist" },
+]
+
+function isMarketFilter(value: string | null): value is MarketFilter {
+  return marketFilters.some((filter) => filter.id === value)
+}
 
 export function MarketSidebar({
   mint,
@@ -15,78 +29,72 @@ export function MarketSidebar({
 }: {
   mint: string
   market?: MarketPayload
-  search: string
-  onSearchChange: (value: string) => void
   watchlist: Set<string>
   onToggleWatchlist: (mint: string) => void
   watchlistPending?: string
 }) {
+  const searchParams = useSearchParams()
+  const listParam = searchParams.get("list")
+  const filter: MarketFilter = isMarketFilter(listParam) ? listParam : "trending"
+
+  const updateFilter = (nextFilter: MarketFilter) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("list", nextFilter)
+    window.history.pushState(null, "", `?${params.toString()}`)
+  }
+
+  const tokenHref = (tokenMint: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("list", filter)
+    return `/trade/${tokenMint}?${params.toString()}`
+  }
+
+  const filteredTokens = (() => {
+    const items = [...(market?.items ?? [])]
+
+    if (filter === "watchlist") {
+      return items.filter((token) => watchlist.has(token.mint))
+    }
+    if (filter === "gainers") {
+      return items
+        .filter((token) => token.change24h > 0)
+        .sort((a, b) => b.change24h - a.change24h)
+    }
+    if (filter === "largest") {
+      return items.sort((a, b) => b.marketCap - a.marketCap)
+    }
+
+    return items.sort(
+      (a, b) =>
+        (a.rank ?? Number.MAX_SAFE_INTEGER) -
+        (b.rank ?? Number.MAX_SAFE_INTEGER),
+    )
+  })()
+
   return (
-    <aside className="scrollbar-thin hidden lg:block lg:order-1 h-[calc(100vh-100px)] overflow-y-auto bg-[#05050d] border-r border-white/10">
+    <aside className="scrollbar-thin sticky top-[60px] hidden h-[calc(100vh-60px)] self-start overflow-y-auto bg-[#05050d] border-r border-white/10 lg:order-1 lg:block">
       <div className="sticky top-0 z-10 border-b border-white/10 bg-[#05050d]">
-        <div className="flex h-10 items-center gap-1 px-3 text-xs">
-          <button
-            type="button"
-            disabled
-            title="Alerts coming soon"
-            aria-label="Alerts coming soon"
-            className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-muted/70 opacity-60 cursor-not-allowed"
-          >
-            <Bell className="size-3" /> Alerts
-          </button>
-          <button
-            type="button"
-            disabled
-            title="Tokens is the active view"
-            aria-label="Tokens is the active view"
-            className="rounded-lg bg-white/[0.06] px-2.5 py-1.5 font-semibold text-white"
-          >
-            Tokens
-          </button>
-          <button
-            type="button"
-            disabled
-            title="Leaderboard coming soon"
-            aria-label="Leaderboard coming soon"
-            className="rounded-lg px-2 py-1.5 text-muted/70 opacity-60 cursor-not-allowed"
-          >
-            Leaderboard
-          </button>
-          <button
-            type="button"
-            disabled
-            title="Feed coming soon"
-            aria-label="Feed coming soon"
-            className="rounded-lg px-2 py-1.5 text-muted/70 opacity-60 cursor-not-allowed"
-          >
-            Feed
-          </button>
-          <button
-            type="button"
-            disabled
-            title="Sidebar collapse coming soon"
-            aria-label="Sidebar collapse coming soon"
-            className="ml-auto cursor-not-allowed text-muted/70 opacity-60"
-          >
-            <ChevronLeft className="size-4" />
-          </button>
+        <div className="flex h-10 items-center justify-between px-3">
+          <h2 className="text-xs font-semibold text-white">Tokens</h2>
+          <span className="text-[10px] uppercase tracking-wider text-muted">
+            {market?.source ?? "loading"}
+          </span>
         </div>
         <div className="flex gap-1.5 overflow-hidden px-3 pb-2 pt-1 border-t border-white/5">
-          {["Watchlist", "Crypto", "Trending", "Most held", "Graduated"].map((item) => (
+          {marketFilters.map((item) => (
             <button
               type="button"
-              key={item}
-              disabled
-              title={`${item} coming soon`}
-              aria-label={`${item} coming soon`}
+              key={item.id}
+              onClick={() => updateFilter(item.id)}
+              aria-pressed={filter === item.id}
               className={cn(
-                "shrink-0 rounded-md border border-white/5 px-2 py-1 text-[10px] transition cursor-not-allowed opacity-70",
-                item === "Trending"
+                "shrink-0 rounded-md border border-white/5 px-2 py-1 text-[10px] transition",
+                filter === item.id
                   ? "bg-white/10 font-semibold text-white"
-                  : "text-muted/70",
+                  : "text-muted hover:bg-white/5 hover:text-white",
               )}
             >
-              {item}
+              {item.label}
             </button>
           ))}
         </div>
@@ -97,7 +105,20 @@ export function MarketSidebar({
           ? Array.from({ length: 10 }, (_, index) => (
               <div key={index} className="mb-1 h-[50px] animate-pulse rounded-lg bg-white/[0.02]" />
             ))
-          : market.items.map((token) => {
+          : filteredTokens.length === 0
+            ? (
+                <div className="px-3 py-8 text-center">
+                  <p className="text-xs font-semibold text-white">
+                    {filter === "watchlist" ? "Your watchlist is empty" : "No tokens found"}
+                  </p>
+                  <p className="mt-1 text-[10px] leading-4 text-muted">
+                    {filter === "watchlist"
+                      ? "Use the star beside a token to add it here."
+                      : "Try another market filter or search."}
+                  </p>
+                </div>
+              )
+            : filteredTokens.map((token) => {
               const active = token.mint === mint
               const watched = watchlist.has(token.mint)
               return (
@@ -110,7 +131,7 @@ export function MarketSidebar({
                       : "border-transparent hover:bg-white/[0.03]",
                   )}
                 >
-                  <Link href={`/trade/${token.mint}`} className="flex min-w-0 flex-1 items-center gap-2">
+                  <Link href={tokenHref(token.mint)} className="flex min-w-0 flex-1 items-center gap-2">
                     <TokenAvatar symbol={token.symbol} imageUrl={token.imageUrl} className="size-8 text-[10px]" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-xs font-bold text-white leading-tight">{token.symbol}</p>
@@ -137,27 +158,6 @@ export function MarketSidebar({
                 </div>
               )
             })}
-      </div>
-
-      <div className="sticky bottom-0 mx-2 mb-2 flex h-9 items-center border border-white/8 bg-[#090914] rounded-lg text-[11px] text-muted overflow-hidden">
-        <button
-          type="button"
-          disabled
-          title="Split bottom coming soon"
-          aria-label="Split bottom coming soon"
-          className="flex-1 flex items-center justify-center gap-1.5 h-full border-r border-white/8 cursor-not-allowed opacity-60"
-        >
-          <span>▤</span> Split bottom
-        </button>
-        <button
-          type="button"
-          disabled
-          title="Split right coming soon"
-          aria-label="Split right coming soon"
-          className="flex-1 flex items-center justify-center gap-1.5 h-full cursor-not-allowed opacity-60"
-        >
-          <span>◫</span> Split right
-        </button>
       </div>
     </aside>
   )

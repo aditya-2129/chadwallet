@@ -63,9 +63,14 @@ export async function loadTokenDetail(mint: string) {
   }
 }
 
-export async function loadChart(mint: string, interval: string, limit: number) {
+export async function loadChart(
+  mint: string,
+  interval: string,
+  limit: number,
+  options: { timeTo?: number } = {},
+) {
   try {
-    const items = await getBirdeyeChart(mint, interval, limit)
+    const items = await getBirdeyeChart(mint, interval, limit, options)
     if (items.length) {
       return {
         items,

@@ -12,7 +12,8 @@ const querySchema = z.object({
     .enum(["1m", "5m", "15m", "1H", "4H", "1D"])
     .optional()
     .default("15m"),
-  limit: z.coerce.number().int().min(12).max(240).optional().default(96),
+  limit: z.coerce.number().int().min(12).max(300).optional().default(96),
+  to: z.coerce.number().int().positive().optional(),
 })
 
 export async function GET(
@@ -29,6 +30,7 @@ export async function GET(
     route.data.mint,
     query.data.interval,
     query.data.limit,
+    { timeTo: query.data.to },
   )
   return success(data)
 }
