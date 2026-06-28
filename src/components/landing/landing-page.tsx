@@ -23,54 +23,48 @@ const heroToken = "So11111111111111111111111111111111111111112";
 
 const flowCards = [
   {
-    label: "BUY / SELL",
-    title: "buy and sell trending tokens",
-    description: "Move from discovery to chart context to trade execution without losing the thread.",
-    image: "/brand/buy-sell-4.png",
-    alt: "ChadWallet flow showing trending token discovery, charts, and buy sell screens",
+    label: "LEADERBOARD",
+    title: "become a legend, top the leaderboard",
+    description: "Track the traders moving fastest and see who is printing in real time.",
     tone: "bg-[#0e0e16]",
+    visual: "leaderboard",
   },
   {
-    label: "KOL FEED",
-    title: "follow traders before the market reacts",
-    description: "Use KOL activity, profiles, holdings, and charts as one research loop.",
-    image: "/brand/kol-4.png",
-    alt: "ChadWallet flow showing KOL trader feed, trader stats, holdings, and token screens",
-    tone: "bg-[#0c162b]",
+    label: "FEED",
+    title: "discover and follow top traders",
+    description: "Follow live signals, theses, entries, and token conviction from one feed.",
+    tone: "bg-[#101018]",
+    visual: "feed",
   },
   {
-    label: "PORTFOLIO",
-    title: "manage your assets in one place",
-    description: "Portfolio, deposit, wallet, and withdrawal flows stay close to the trade.",
-    image: "/brand/portfolio-4.png",
-    alt: "ChadWallet flow showing portfolio, deposit, wallet, and withdrawal screens",
+    label: "ALERTS",
+    title: "real time notifications for what the best are buying",
+    description: "Know when top wallets rotate before the rest of the market reacts.",
     tone: "bg-[#0d0d15]",
+    visual: "alerts",
   },
   {
-    label: "LAUNCH",
-    title: "launch a memecoin from a tweet",
-    description: "Capture social momentum, fund the launch, and move straight into the new market.",
-    image: "/brand/launch-4.png",
-    alt: "ChadWallet flow showing a social post, launch form, funding, and token screen",
-    tone: "bg-[#0a161e]",
+    label: "EASY ONBOARDING",
+    title: "create an account in seconds",
+    description: "Start with social login or an embedded wallet without leaving the app.",
+    tone: "bg-[#0c1618]",
+    visual: "onboarding",
   },
   {
-    label: "X TRENDS",
-    title: "catch early trends on X",
-    description: "Follow live social signal, validate the chart, and size the opportunity early.",
-    image: "/brand/memecoin-4.png",
-    alt: "ChadWallet flow showing early X trends and token research screens",
+    label: "ZERO COMPLEXITY",
+    title: "trade without wallet chaos",
+    description: "Discovery, funding, research, and swaps stay in one clean flow.",
     tone: "bg-[#0c1220]",
+    visual: "wallet",
   },
   {
-    label: "RELAUNCH",
-    title: "relaunch a memecoin fast",
-    description: "Bring a dormant chart back to life with relaunch, funding, and trade screens.",
-    image: "/brand/relaunch-4.png",
-    alt: "ChadWallet flow showing relaunch, funding, and trade execution screens",
+    label: "ONE CLICK TO BUY",
+    title: "fund your wallet and buy fast",
+    description: "Move from alert to chart to buy action with fewer screens between decisions.",
     tone: "bg-[#0b162c]",
+    visual: "buy",
   },
-];
+] as const;
 
 const appScreens = [
   {
@@ -186,42 +180,193 @@ function MobileMenu({
   );
 }
 
+function FeatureVisual({ visual }: { visual: (typeof flowCards)[number]["visual"] }) {
+  if (visual === "leaderboard") {
+    const rows = [
+      { rank: "1", name: "change", handle: "@change", amount: "+$1,726,513.19", accent: "bg-[#5863ff]" },
+      { rank: "2", name: "frank", handle: "@frankdegods", amount: "+$1,236,362.49", accent: "bg-[#d7dce5]" },
+      { rank: "3", name: "_logjam", handle: "@_logjam", amount: "+$810,605.83", accent: "bg-[#9c7354]" },
+      { rank: "4.", name: "irulan", handle: "@corrino.iv", amount: "+$685,392.12", accent: "bg-[#222735]" },
+    ];
+
+    return (
+      <div className="relative mt-auto h-[250px] overflow-hidden px-7 pb-7">
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0e0e16] to-transparent" />
+        <div className="space-y-7">
+          {rows.map((row, index) => (
+            <div
+              key={row.name}
+              className={`grid grid-cols-[58px_1fr_auto] items-center gap-4 ${index === 3 ? "opacity-25" : ""}`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-5 text-center text-lg font-black text-[#d4d8e8]/80">{row.rank}</span>
+                <span className={`grid size-12 place-items-center rounded-full ${row.accent}`}>
+                  {index === 0 ? (
+                    <Image
+                      src="/brand/logo-light.png"
+                      alt=""
+                      width={32}
+                      height={32}
+                      className="size-8"
+                    />
+                  ) : (
+                    <span className="text-xs font-black text-black">{row.name.slice(0, 2).toUpperCase()}</span>
+                  )}
+                </span>
+              </div>
+              <div className="min-w-0">
+                <div className="truncate text-lg font-bold text-white">{row.name}</div>
+                <div className="truncate text-base font-semibold text-[#D1D8FF80]">{row.handle}</div>
+              </div>
+              <div className="text-right text-lg font-bold text-chad-green">{row.amount}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (visual === "feed") {
+    const items = [
+      { name: "remusofmars", tag: "Thesis", text: "we're so back", meta: "5m" },
+      { name: "collectible", tag: "Buy", text: "PENGU  $34.3K at $642.3M MC", meta: "12m" },
+      { name: "lesabre", tag: "Sell", text: "SOL  $4.5K at $41.5B MC", meta: "23h" },
+    ];
+
+    return (
+      <div className="relative mt-auto h-[260px] overflow-hidden px-10 pb-0">
+        <div className="mx-auto h-full max-w-[390px] overflow-hidden rounded-t-[16px] bg-[#05040c] shadow-[0_0_40px_rgba(95,107,247,0.14)]">
+          {items.map((item, index) => (
+            <div key={item.name} className="border-b border-white/5 px-4 py-4">
+              <div className="flex items-start gap-3">
+                <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#1b2137] text-xs font-black text-white">
+                  {item.name.slice(0, 2).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 text-sm font-bold text-white">
+                    <span>{item.name}</span>
+                    <span
+                      className={`rounded px-1.5 py-0.5 text-[10px] ${
+                        item.tag === "Buy"
+                          ? "bg-chad-green/20 text-chad-green"
+                          : item.tag === "Sell"
+                            ? "bg-[#ff5d5d]/20 text-[#ff8b8b]"
+                            : "bg-[#5964f2]/30 text-[#9fa6ff]"
+                      }`}
+                    >
+                      {item.tag}
+                    </span>
+                    <span className="text-xs text-[#D1D8FF55]">{item.meta}</span>
+                  </div>
+                  <div className="mt-2 rounded-xl bg-white/[0.055] px-4 py-3 text-sm font-semibold text-[#EAEDFFCC]">
+                    {index === 0 ? (
+                      <div className="flex items-center justify-between">
+                        <span>Position 67</span>
+                        <span className="text-right text-white">$242.6K<br /><span className="text-chad-green">+$23.23K</span></span>
+                      </div>
+                    ) : (
+                      item.text
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#101018] to-transparent" />
+      </div>
+    );
+  }
+
+  if (visual === "alerts") {
+    return (
+      <div className="relative mt-auto grid h-[260px] place-items-center px-8 pb-7">
+        <div className="absolute inset-x-14 bottom-20 h-20 rounded-[26px] bg-white/10 blur-sm" />
+        <div className="relative flex w-full max-w-[480px] items-center gap-4 rounded-[24px] border border-white/10 bg-[#2a2a33] px-5 py-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
+          <div className="grid size-14 shrink-0 place-items-center rounded-xl bg-black">
+            <Image src="/brand/logo-light.png" alt="" width={38} height={38} className="size-10" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-lg font-bold text-white">DOGE is up 5.98%</div>
+            <div className="truncate text-lg text-white"><span className="text-chad-green">●</span> 50 top traders bought $88,203.12</div>
+          </div>
+          <div className="self-start text-sm font-medium text-[#D1D8FF66]">9:41 AM</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (visual === "onboarding") {
+    return (
+      <div className="relative mt-auto h-[250px] px-8 pb-7">
+        <div className="mx-auto flex max-w-[430px] flex-col gap-3 rounded-[24px] bg-[#080b10] p-4">
+          {["Continue with Google", "Continue with Apple", "Create embedded wallet"].map((label, index) => (
+            <div key={label} className="flex h-14 items-center justify-between rounded-2xl bg-white/[0.07] px-5 text-base font-bold text-white">
+              <span>{label}</span>
+              <span className={`size-3 rounded-full ${index === 2 ? "bg-chad-green" : "bg-[#5964f2]"}`} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (visual === "wallet") {
+    return (
+      <div className="relative mt-auto h-[250px] overflow-hidden px-7 pb-7">
+        <div className="grid gap-3">
+          {["Discover", "Chart", "Fund", "Buy"].map((step, index) => (
+            <div key={step} className="flex items-center gap-4 rounded-2xl bg-white/[0.055] px-5 py-4">
+              <span className="grid size-9 place-items-center rounded-full bg-[#5964f2]/25 text-sm font-black text-[#aab0ff]">{index + 1}</span>
+              <span className="text-lg font-bold text-white">{step}</span>
+              <span className="ml-auto h-2 w-20 rounded-full bg-chad-green/70" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative mt-auto h-[250px] px-8 pb-7">
+      <div className="mx-auto max-w-[440px] rounded-[24px] bg-[#050914] p-5">
+        <div className="flex items-center justify-between text-sm font-bold text-[#D1D8FF99]">
+          <span>SOL balance</span>
+          <span>Ready</span>
+        </div>
+        <div className="mt-5 text-5xl font-black tracking-tight text-white">$147.38</div>
+        <div className="mt-5 h-24 rounded-2xl bg-[linear-gradient(135deg,rgba(35,238,132,0.18),rgba(89,100,242,0.2))]" />
+        <button className="mt-4 h-12 w-full rounded-xl bg-chad-green text-sm font-black text-black">
+          Buy now
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function FlowCard({
   label,
   title,
   description,
-  image,
-  alt,
   tone,
+  visual,
 }: (typeof flowCards)[number]) {
   return (
     <div
-      className={`group flex h-[390px] min-w-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/5 pb-0 pt-7 transition-all duration-300 hover:border-white/12 lg:h-[410px] ${tone}`}
+      className={`group flex min-h-[520px] min-w-0 flex-col overflow-hidden rounded-[28px] border border-white/10 pt-11 transition-all duration-300 hover:border-white/15 lg:min-h-[548px] ${tone}`}
     >
-      <div className="px-7 lg:px-8">
-        <div className="font-mono text-xs font-bold uppercase tracking-wider text-[#606af7]">
+      <div className="px-8 lg:px-10">
+        <div className="font-mono text-sm font-bold uppercase tracking-wider text-[#5964f2]">
           {label}
         </div>
-        <h3 className="mt-2 text-[26px] font-black leading-[1.06] tracking-tight text-white">
+        <h3 className="mt-5 max-w-[460px] text-[32px] font-black leading-[1.12] tracking-[-0.03em] text-white lg:text-[38px]">
           {title}
         </h3>
-        <p className="mt-4 text-sm leading-5 text-[#D1D8FF99]">
+        <p className="mt-5 max-w-[420px] text-base leading-6 text-[#D1D8FF99]">
           {description}
         </p>
       </div>
-      <div className="mt-8 w-full overflow-hidden px-4">
-        <div className="overflow-hidden rounded-t-[16px] border-x border-t border-white/10 shadow-2xl transition-all duration-300 group-hover:translate-y-[-6px] group-hover:border-white/15">
-          <Image
-            loading="lazy"
-            src={image}
-            alt={alt}
-            width={3840}
-            height={2160}
-            className="w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-            sizes="(max-width: 1024px) 100vw, 33vw"
-          />
-        </div>
-      </div>
+      <FeatureVisual visual={visual} />
     </div>
   );
 }
@@ -559,25 +704,17 @@ export function LandingPage() {
         </div>
 
         {/* ── Feature cards section ── */}
-        <div id="features" className="pt-8 lg:py-2 px-3 lg:px-20 flex flex-col self-stretch min-[500px]:self-center gap-13 max-w-[1250px] scroll-mt-24">
+        <div id="features" className="flex w-full scroll-mt-24 flex-col gap-14 self-stretch px-5 pt-8 lg:px-20 lg:py-2">
           {/* Section heading — desktop only */}
-          <div className="hidden lg:flex flex-col gap-3">
-            <h2 className="text-[60px] tracking-tighter leading-15">never miss out again</h2>
-            <p className="text-[#EAEDFF99] leading-6 text-[28px]">ChadWallet flows for discovery, social signal, launches, and fast Solana trading</p>
+          <div className="hidden w-full max-w-[1720px] flex-col gap-3 self-center lg:flex">
+            <h2 className="text-[clamp(4rem,5.4vw,5.6rem)] tracking-[-0.04em] leading-[0.88]">never miss out again</h2>
+            <p className="text-[#EAEDFF99] leading-tight text-[32px] tracking-[-0.03em]">the only social-first trading app</p>
           </div>
 
-          <div className="flex flex-col gap-3 lg:gap-6">
-            <div className="flex flex-col lg:flex-row gap-3 lg:gap-6 items-start">
-              {flowCards.slice(0, 3).map((card) => (
-                <FlowCard key={card.label} {...card} />
-              ))}
-            </div>
-
-            <div className="flex flex-col lg:flex-row gap-3 lg:gap-6 items-start">
-              {flowCards.slice(3).map((card) => (
-                <FlowCard key={card.label} {...card} />
-              ))}
-            </div>
+          <div className="grid w-full max-w-[1720px] gap-5 self-center lg:grid-cols-3 lg:gap-7">
+            {flowCards.map((card) => (
+              <FlowCard key={card.label} {...card} />
+            ))}
           </div>
         </div>
 
