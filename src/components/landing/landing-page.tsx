@@ -582,10 +582,10 @@ export function LandingPage() {
         </div>
 
         {/* ── CTA / spinning circles section ── */}
-        <section className="px-3 lg:px-20 pt-16 lg:pt-24 flex flex-col self-stretch min-[500px]:self-center gap-10 max-w-[1250px]">
-          <div className="relative overflow-hidden rounded-[20px] bg-[#080811] px-5 py-8 lg:px-12 lg:py-10">
+        <section className="flex w-full flex-col gap-10 self-stretch pt-16 lg:pt-24">
+          <div className="relative overflow-hidden bg-[#080811] px-5 py-8 lg:px-20 lg:py-10">
             <div className="pointer-events-none absolute bottom-0 left-0 h-44 w-80 bg-chad-green/5 blur-3xl" />
-            <div className="relative grid gap-10 lg:min-h-[620px] lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div className="relative mx-auto grid w-full max-w-[1500px] gap-10 lg:min-h-[620px] lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div className="flex flex-col gap-5">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-semibold text-[#D1D8FFB3]">
                   <span>App Store</span>
@@ -663,7 +663,7 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+          <div className="mx-auto grid w-full max-w-[1250px] gap-3 px-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 lg:px-20">
             {appScreens.map((screen) => (
               <AppScreenCard key={screen.title} {...screen} />
             ))}
