@@ -96,7 +96,8 @@ a {
     transition-duration: 0.01ms !important;
   }
   .ticker-track-left,
-  .ticker-track-right {
+  .ticker-track-right,
+  .app-screens-track {
     animation: none !important;
     transform: none !important;
   }
@@ -129,6 +130,19 @@ a {
   animation: chad-ticker-right 38s linear infinite;
 }
 
+@keyframes chad-app-screens-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.app-screens-track {
+  animation: chad-app-screens-left 58s linear infinite;
+}
+
 .group-hover-paused:hover .ticker-track-left,
 .group-hover-paused:hover .ticker-track-right {
   animation-play-state: paused;
@@ -154,6 +168,5 @@ a {
 .animate-spin-slow-reverse {
   animation: spin 30s linear infinite reverse;
 }
-
 
 

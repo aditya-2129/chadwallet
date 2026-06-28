@@ -233,7 +233,7 @@ function AppScreenCard({
   alt,
 }: (typeof appScreens)[number]) {
   return (
-    <article className="group flex min-h-[430px] flex-col overflow-hidden rounded-[24px] border border-white/5 bg-[#0e0e16] pt-6 transition-all duration-300 hover:border-white/12">
+    <article className="group flex h-[410px] w-full flex-col overflow-hidden rounded-[24px] border border-white/5 bg-[#0e0e16] pt-6 transition-all duration-300 hover:border-white/12 sm:h-[430px]">
       <div className="px-6">
         <h3 className="text-[24px] font-black leading-[1.05] tracking-tight text-white">
           {title}
@@ -655,10 +655,25 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="mx-auto grid w-full max-w-[1250px] gap-3 px-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 lg:px-20">
-            {appScreens.map((screen) => (
-              <AppScreenCard key={screen.title} {...screen} />
-            ))}
+          <div className="group/screens relative w-full overflow-hidden py-1 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+            <div className="app-screens-track flex w-max items-stretch group-hover/screens:[animation-play-state:paused] focus-within:[animation-play-state:paused]">
+              {[0, 1].map((setIndex) => (
+                <div
+                  key={setIndex}
+                  className="flex items-stretch gap-4 pr-4 lg:gap-6 lg:pr-6"
+                  aria-hidden={setIndex === 1 ? "true" : undefined}
+                >
+                  {appScreens.map((screen) => (
+                    <div
+                      key={`${screen.title}-${setIndex}`}
+                      className="w-[min(82vw,380px)] shrink-0 lg:w-[410px]"
+                    >
+                      <AppScreenCard {...screen} />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
