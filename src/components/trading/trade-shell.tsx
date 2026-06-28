@@ -18,6 +18,7 @@ import { TokenTabs } from "@/components/trading/token-tabs"
 import { TradePanel } from "@/components/trading/trade-panel"
 import { TokenAvatar } from "@/components/token-avatar"
 import { AuthButton } from "@/components/auth-button"
+import { TokenTickerStrip } from "@/components/token-ticker-strip"
 import { useAuth } from "@/components/auth-context"
 import { cn, formatCurrency, shortenAddress } from "@/lib/utils"
 import { SOL_MINT, USDC_MINT } from "@/lib/mock-data"
@@ -230,6 +231,10 @@ export function TradeShell({ mint }: { mint: string }) {
   }, [address, authenticated, getAccessToken, mint])
 
   const token = tokenQuery.data?.token
+  const tickerTokens = marketQuery.data?.items ?? []
+  const tickerMidpoint = Math.ceil(tickerTokens.length / 2)
+  const topTickerTokens = tickerTokens.slice(0, tickerMidpoint)
+  const bottomTickerTokens = tickerTokens.slice(tickerMidpoint)
   const watchlist = useMemo(
     () => new Set(watchlistQuery.data?.items ?? []),
     [watchlistQuery.data?.items],
@@ -320,6 +325,14 @@ export function TradeShell({ mint }: { mint: string }) {
           </div>
         </div>
       </header>
+
+      <TokenTickerStrip
+        compact
+        direction="left"
+        tokens={topTickerTokens}
+        label="Trending"
+        className="z-30"
+      />
 
       <div className="relative mx-auto">
         <div className="grid lg:grid-cols-[240px_minmax(0,1fr)_320px] xl:grid-cols-[260px_minmax(0,1fr)_340px] 2xl:grid-cols-[280px_minmax(0,1fr)_360px]">
@@ -564,6 +577,13 @@ export function TradeShell({ mint }: { mint: string }) {
           </div>
         </div>
       </div>
+      <TokenTickerStrip
+        compact
+        direction="right"
+        tokens={bottomTickerTokens.length > 0 ? bottomTickerTokens : topTickerTokens}
+        label="Gainers"
+        className="border-t border-b-0"
+      />
       <button
         onClick={() => setIsMobileTradeOpen(true)}
         className="fixed inset-x-4 bottom-4 z-40 flex h-14 items-center justify-center rounded-2xl bg-chad-green font-semibold text-[#03120c] shadow-[0_12px_40px_rgba(32,233,130,.28)] lg:hidden cursor-pointer"

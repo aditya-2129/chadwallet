@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthButton } from "@/components/auth-button";
-import { TokenTickerStrip } from "@/components/landing/token-ticker-strip";
+import { TokenTickerStrip } from "@/components/token-ticker-strip";
 import type { TokenSummary } from "@/lib/types";
 
 type TrendingResponse = {
@@ -250,6 +250,7 @@ export function LandingPage() {
 
   // Split tokens into two groups for top vs bottom tickers
   const midpoint = Math.ceil(trendingTokens.length / 2);
+  const topTokens = trendingTokens.slice(0, midpoint);
   const bottomTokens = trendingTokens.slice(midpoint);
 
   return (
@@ -340,6 +341,14 @@ export function LandingPage() {
         </button>
         <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
       </header>
+
+      {topTokens.length > 0 && (
+        <TokenTickerStrip
+          direction="left"
+          tokens={topTokens}
+          label="Trending"
+        />
+      )}
 
 
 
