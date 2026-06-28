@@ -233,7 +233,7 @@ function AppScreenCard({
   alt,
 }: (typeof appScreens)[number]) {
   return (
-    <article className="group flex h-[410px] w-full flex-col overflow-hidden rounded-[24px] border border-white/5 bg-[#0e0e16] pt-6 transition-all duration-300 hover:border-white/12 sm:h-[430px]">
+    <article className="group flex h-[470px] w-full flex-col overflow-hidden rounded-[24px] border border-white/5 bg-[#0e0e16] pt-6 transition-all duration-300 hover:border-white/12 sm:h-[500px]">
       <div className="px-6">
         <h3 className="text-[24px] font-black leading-[1.05] tracking-tight text-white">
           {title}
@@ -242,16 +242,16 @@ function AppScreenCard({
           {description}
         </p>
       </div>
-      <div className="relative mt-5 flex flex-1 items-end justify-center overflow-hidden px-5">
-        <div className="h-full w-full rounded-t-[20px] border-x border-t border-white/10 bg-[#2ca8f3] p-2.5 transition-transform duration-300 group-hover:translate-y-[-6px]">
+      <div className="relative mt-4 flex flex-1 items-end justify-center overflow-hidden px-4">
+        <div className="h-full w-full rounded-t-[20px] border-x border-t border-white/10 bg-[#2ca8f3] transition-transform duration-300 group-hover:translate-y-[-6px]">
           <div className="relative h-full w-full overflow-hidden rounded-t-[12px]">
             <Image
               loading="lazy"
               src={image}
               alt={alt}
               fill
-              className="object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.02]"
-              sizes="(max-width: 1024px) 100vw, 33vw"
+              className="origin-bottom scale-[1.45] object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.52]"
+              sizes="(max-width: 1024px) 88vw, 460px"
             />
           </div>
         </div>
@@ -666,7 +666,7 @@ export function LandingPage() {
                   {appScreens.map((screen) => (
                     <div
                       key={`${screen.title}-${setIndex}`}
-                      className="w-[min(82vw,380px)] shrink-0 lg:w-[410px]"
+                      className="w-[min(88vw,430px)] shrink-0 lg:w-[460px]"
                     >
                       <AppScreenCard {...screen} />
                     </div>
