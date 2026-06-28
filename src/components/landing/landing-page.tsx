@@ -583,8 +583,7 @@ export function LandingPage() {
 
         {/* ── CTA / spinning circles section ── */}
         <section className="px-3 lg:px-20 pt-16 lg:pt-24 flex flex-col self-stretch min-[500px]:self-center gap-10 max-w-[1250px]">
-          <div className="relative overflow-hidden rounded-[20px] border border-white/10 bg-[#080811] px-5 py-8 lg:px-12 lg:py-10">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/20" />
+          <div className="relative overflow-hidden rounded-[20px] bg-[#080811] px-5 py-8 lg:px-12 lg:py-10">
             <div className="pointer-events-none absolute bottom-0 left-0 h-44 w-80 bg-chad-green/5 blur-3xl" />
             <div className="relative grid gap-10 lg:min-h-[620px] lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div className="flex flex-col gap-5">
