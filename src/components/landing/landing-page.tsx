@@ -25,7 +25,6 @@ const flowCards = [
   {
     label: "LEADERBOARD",
     title: "become a legend, top the leaderboard",
-    description: "Track the traders moving fastest and see who is printing in real time.",
     tone: "bg-[#0e0e16]",
     image: "/brand/kol-4.png",
     alt: "ChadWallet trader profile, holdings, and performance screens",
@@ -33,7 +32,6 @@ const flowCards = [
   {
     label: "FEED",
     title: "discover and follow top traders",
-    description: "Follow live signals, theses, entries, and token conviction from one feed.",
     tone: "bg-[#101018]",
     image: "/brand/memecoin-4.png",
     alt: "ChadWallet social signal and token research screens",
@@ -41,7 +39,6 @@ const flowCards = [
   {
     label: "ALERTS",
     title: "real time notifications for what the best are buying",
-    description: "Know when top wallets rotate before the rest of the market reacts.",
     tone: "bg-[#0d0d15]",
     image: "/brand/buy-sell-4.png",
     alt: "ChadWallet buy and sell flow for trending tokens",
@@ -49,7 +46,6 @@ const flowCards = [
   {
     label: "EASY ONBOARDING",
     title: "create an account in seconds",
-    description: "Start with social login or an embedded wallet without leaving the app.",
     tone: "bg-[#0c1618]",
     image: "/brand/app-splash.png",
     alt: "ChadWallet onboarding welcome screen",
@@ -57,7 +53,6 @@ const flowCards = [
   {
     label: "ZERO COMPLEXITY",
     title: "trade without wallet chaos",
-    description: "Discovery, funding, research, and swaps stay in one clean flow.",
     tone: "bg-[#0c1220]",
     image: "/brand/portfolio-4.png",
     alt: "ChadWallet portfolio, deposit, and withdrawal screens",
@@ -65,7 +60,6 @@ const flowCards = [
   {
     label: "ONE CLICK TO BUY",
     title: "fund your wallet and buy fast",
-    description: "Move from alert to chart to buy action with fewer screens between decisions.",
     tone: "bg-[#0b162c]",
     image: "/brand/app-token.png",
     alt: "ChadWallet token chart and buy controls",
@@ -189,7 +183,6 @@ function MobileMenu({
 function FlowCard({
   label,
   title,
-  description,
   tone,
   image,
   alt,
@@ -205,9 +198,6 @@ function FlowCard({
         <h3 className="mt-3 max-w-[460px] text-[28px] font-black leading-[1.08] tracking-[-0.03em] text-white lg:text-[34px]">
           {title}
         </h3>
-        <p className="mt-4 max-w-[420px] text-sm leading-5 text-[#D1D8FF99] lg:text-[15px]">
-          {description}
-        </p>
       </div>
       <div className="mt-auto w-full overflow-hidden px-5 pb-5">
         <div className="h-[165px] overflow-hidden rounded-[16px] border border-white/10 bg-[#1f9ee7] transition-transform duration-300 group-hover:translate-y-[-4px] lg:h-[185px]">
